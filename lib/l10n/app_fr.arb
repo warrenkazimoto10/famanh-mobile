@@ -1,0 +1,19 @@
+{
+  "@@locale": "fr",
+  "errorGenericTitle": "Oups ! Une erreur est survenue",
+  "errorRetryButton": "RÉESSAYER",
+  "foodHubTitle": "RESTAURATION",
+  "foodHubSearchHint": "Rechercher un restaurant...",
+  "categoryAll": "Tout",
+  "categoryLocal": "Local",
+  "categoryFastFood": "Fast Food",
+  "categoryPizza": "Pizza",
+  "categoryBurger": "Burger",
+  "categoryGrill": "Grillades",
+  "residenceUnknown": "Inconnu",
+  "residenceDescription": "Description",
+  "residenceNoDescription": "Aucune description disponible.",
+  "residenceAmenities": "Équipements",
+  "residencePricePerNight": "Prix par nuit",
+  "residenceBookButton": "RÉSERVER"
+}

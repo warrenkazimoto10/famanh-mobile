@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722296691925",
+    "project_id": "faman-2c3aa",
+    "storage_bucket": "faman-2c3aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722296691925:android:3d0db58389199fc2a9965c",
+        "android_client_info": {
+          "package_name": "com.example.faman"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwuNOYM0LYtxQkCdNWpJf7LNO4lYBiTzc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

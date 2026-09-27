@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "errorGenericTitle": "Oops! An error occurred",
+  "errorRetryButton": "RETRY",
+  "foodHubTitle": "FOOD DELIVERY",
+  "foodHubSearchHint": "Search for a restaurant...",
+  "categoryAll": "All",
+  "categoryLocal": "Local",
+  "categoryFastFood": "Fast Food",
+  "categoryPizza": "Pizza",
+  "categoryBurger": "Burger",
+  "categoryGrill": "Grill",
+  "residenceUnknown": "Unknown",
+  "residenceDescription": "Description",
+  "residenceNoDescription": "No description available.",
+  "residenceAmenities": "Amenities",
+  "residencePricePerNight": "Price per night",
+  "residenceBookButton": "BOOK"
+}
