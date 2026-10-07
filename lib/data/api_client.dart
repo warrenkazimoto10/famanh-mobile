@@ -1139,6 +1139,8 @@ class UserMeDto {
     required this.name,
     required this.phone,
     required this.role,
+    this.vehicleType,
+    this.vehiclePlate,
     this.avatarUrl,
     this.preferredAddress,
     this.preferredLat,
@@ -1150,6 +1152,8 @@ class UserMeDto {
   final String? name;
   final String phone;
   final String role;
+  final String? vehicleType;
+  final String? vehiclePlate;
   final String? avatarUrl;
   final String? preferredAddress;
   final double? preferredLat;
@@ -1162,6 +1166,8 @@ class UserMeDto {
       name: json['name']?.toString(),
       phone: json['phone']?.toString() ?? '',
       role: json['role']?.toString() ?? 'client',
+      vehicleType: json['vehicle_type']?.toString(),
+      vehiclePlate: json['vehicle_plate']?.toString(),
       avatarUrl: json['avatar_url']?.toString(),
       preferredAddress: json['preferred_address']?.toString(),
       preferredLat: _toDouble(json['preferred_lat']),

@@ -1,0 +1,60 @@
+name: Build iOS (Flutter IPA)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: 🍏 Build iOS Application
+    runs-on: macos-14
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up Java (if needed)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 🎯 Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: 🔍 Verify Flutter Environment
+        run: flutter doctor -v
+
+      - name: 🛠️ Build iOS App (Release No-Codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: 📦 Package into IPA Archive
+        run: |
+          mkdir -p build/ios/ipa_payload/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/ipa_payload/Payload/
+          cd build/ios/ipa_payload
+          zip -r ../Famanh_Adiake_iOS_Release.ipa Payload
+          cd ../../..
+
+      - name: 🚀 Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Famanh_Adiake_iOS_Release_IPA
+          path: build/ios/Famanh_Adiake_iOS_Release.ipa
+          retention-days: 14
+
+      - name: 🚀 Upload Runner.app Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Famanh_Adiake_iOS_Runner_App
+          path: build/ios/iphoneos/Runner.app
+          retention-days: 14

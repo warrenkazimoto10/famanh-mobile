@@ -4,14 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../app/routes.dart';
 import '../../data/api_client.dart';
+import '../../data/taxi_api_client.dart';
 import '../tracking/client_tracking_screen.dart';
 
 const _kPrimary = Color(0xFF006194);
 const _kBrandBlue = Color(0xFF0052FF);
 const _kBg = Color(0xFFFAF8FF);
 
-enum ClientOrderKind { gas, parcel, food }
+enum ClientOrderKind { gas, parcel, food, taxi }
 
 String _formatDateTimeFr(DateTime dt) {
   final d = dt.toLocal();
@@ -219,6 +221,26 @@ class _ClientOrdersScreenState extends State<ClientOrdersScreen> {
             subtitle: '${f.stops.length} restaurant${f.stops.length > 1 ? 's' : ''} partenaire${f.stops.length > 1 ? 's' : ''}',
           ),
       ];
+
+      // Récupération de la course taxi active du passager si existante
+      try {
+        final activeTaxi = await TaxiApiClient.getActivePassengerRide();
+        if (activeTaxi != null) {
+          list.add(
+            ClientOrderListItem(
+              kind: ClientOrderKind.taxi,
+              id: (activeTaxi['booking_id'] as num?)?.toInt() ?? 0,
+              status: activeTaxi['status']?.toString() ?? 'accepted',
+              amountFcfa: (activeTaxi['fare_amount'] as num?)?.toInt() ?? 200,
+              createdAt: DateTime.now(),
+              title: 'Taxi Communal • ${activeTaxi['type'] == 'private' ? 'Course Privatisée' : 'Course Partagée'}',
+              subtitle: '${activeTaxi['pickup_address'] ?? 'Ramassage'} ➔ ${activeTaxi['dropoff_address'] ?? 'Dépose'}',
+              driverName: activeTaxi['driver']?['name']?.toString(),
+              driverPhone: activeTaxi['driver']?['phone']?.toString(),
+            ),
+          );
+        }
+      } catch (_) {}
 
       list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
@@ -495,6 +517,13 @@ class _ClientOrdersScreenState extends State<ClientOrdersScreen> {
                         iconText: '📦',
                         selected: _selectedCategory == ClientOrderKind.parcel,
                         onTap: () => setState(() => _selectedCategory = ClientOrderKind.parcel),
+                      ),
+                      const SizedBox(width: 8),
+                      _CategoryFilterChip(
+                        label: 'Taxi',
+                        iconText: '🚖',
+                        selected: _selectedCategory == ClientOrderKind.taxi,
+                        onTap: () => setState(() => _selectedCategory = ClientOrderKind.taxi),
                       ),
                     ],
                   ),
@@ -810,7 +839,9 @@ class _ActiveOrderCard extends StatelessWidget {
                                 ? Icons.propane_tank_rounded
                                 : (item.kind == ClientOrderKind.parcel
                                     ? Icons.inventory_2_rounded
-                                    : Icons.restaurant_rounded),
+                                    : (item.kind == ClientOrderKind.taxi
+                                        ? Icons.local_taxi_rounded
+                                        : Icons.restaurant_rounded)),
                             color: _kPrimary,
                             size: 22,
                           ),
@@ -1004,6 +1035,10 @@ class _ActiveOrderCard extends StatelessWidget {
                         height: 44,
                         child: ElevatedButton.icon(
                           onPressed: () {
+                            if (item.kind == ClientOrderKind.taxi) {
+                              Navigator.of(context).pushNamed(AppRoutes.taxi);
+                              return;
+                            }
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => ClientOrderMapScreen(
@@ -1148,10 +1183,13 @@ class _HistoryOrderCard extends StatelessWidget {
                           ? Icons.propane_tank_rounded
                           : (item.kind == ClientOrderKind.parcel
                               ? Icons.inventory_2_rounded
-                              : Icons.restaurant_rounded),
+                              : (item.kind == ClientOrderKind.taxi
+                                  ? Icons.local_taxi_rounded
+                                  : Icons.restaurant_rounded)),
                       color: isCancelled ? Colors.red : const Color(0xFF059669),
                       size: 20,
                     ),
+
                   ),
                   const SizedBox(width: 12),
                   Column(

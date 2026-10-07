@@ -22,28 +22,63 @@ class ApiSession {
   static final currentUser = ValueNotifier<UserMeDto?>(null);
 
   static Future<void> load() async {
-    _token = await secureStorage.read(key: tokenKey);
-
-    // Migration unique : si un token subsiste en clair dans SharedPreferences
-    // (ancienne version), on le déplace vers le stockage chiffré.
-    if (_token == null || _token!.isEmpty) {
-      final prefs = await SharedPreferences.getInstance();
-      final legacy = prefs.getString(tokenKey);
-      if (legacy != null && legacy.isNotEmpty) {
-        _token = legacy;
-        await secureStorage.write(key: tokenKey, value: legacy);
-        await prefs.remove(tokenKey);
+    try {
+      if (kIsWeb) {
+        final prefs = await SharedPreferences.getInstance();
+        _token = prefs.getString(tokenKey);
+        return;
       }
+      _token = await secureStorage.read(key: tokenKey);
+
+      // Migration unique : si un token subsiste en clair dans SharedPreferences
+      // (ancienne version), on le déplace vers le stockage chiffré.
+      if (_token == null || _token!.isEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        final legacy = prefs.getString(tokenKey);
+        if (legacy != null && legacy.isNotEmpty) {
+          _token = legacy;
+          await secureStorage.write(key: tokenKey, value: legacy);
+          await prefs.remove(tokenKey);
+        }
+      }
+    } catch (_) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        _token = prefs.getString(tokenKey);
+      } catch (_) {}
     }
   }
 
   static Future<void> setToken(String? token) async {
     _token = token;
-    if (token == null || token.isEmpty) {
-      await secureStorage.delete(key: tokenKey);
-      currentUser.value = null;
-    } else {
-      await secureStorage.write(key: tokenKey, value: token);
+    try {
+      if (kIsWeb) {
+        final prefs = await SharedPreferences.getInstance();
+        if (token == null || token.isEmpty) {
+          await prefs.remove(tokenKey);
+          currentUser.value = null;
+        } else {
+          await prefs.setString(tokenKey, token);
+        }
+        return;
+      }
+
+      if (token == null || token.isEmpty) {
+        await secureStorage.delete(key: tokenKey);
+        currentUser.value = null;
+      } else {
+        await secureStorage.write(key: tokenKey, value: token);
+      }
+    } catch (_) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        if (token == null || token.isEmpty) {
+          await prefs.remove(tokenKey);
+          currentUser.value = null;
+        } else {
+          await prefs.setString(tokenKey, token);
+        }
+      } catch (_) {}
     }
   }
 
@@ -52,7 +87,9 @@ class ApiSession {
       currentUser.value = null;
       return;
     }
-    final me = await ApiClient.me();
-    currentUser.value = me;
+    try {
+      final me = await ApiClient.me();
+      currentUser.value = me;
+    } catch (_) {}
   }
 }

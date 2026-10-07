@@ -16,8 +16,11 @@ import '../features/events/my_tickets_screen.dart';
 import '../features/food/food_hub_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/splash/splash_screen.dart';
+import '../features/taxi/taxi_home_screen.dart';
+import '../features/taxi/taxi_driver_screen.dart';
 
 abstract class AppRoutes {
+
   static const splash = '/';
   static const onboarding = '/onboarding';
   static const login = '/login';
@@ -34,9 +37,16 @@ abstract class AppRoutes {
   static const events = '/events';
   static const eventDetail = '/events/detail';
   static const myTickets = '/events/my-tickets';
+  static const taxi = '/taxi';
+  static const taxiDriver = '/taxi/driver';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case taxi:
+        return MaterialPageRoute(builder: (_) => const TaxiHomeScreen());
+      case taxiDriver:
+        return MaterialPageRoute(builder: (_) => const TaxiDriverScreen());
+
       case splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case onboarding:

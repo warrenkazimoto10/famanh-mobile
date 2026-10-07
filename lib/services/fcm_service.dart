@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../app/routes.dart';
 import '../data/api_client.dart';
 import '../data/api_session.dart';
 
@@ -115,9 +116,11 @@ class FcmService {
 
       debugPrint('Notification tapped with type: $type, orderId: $orderId');
 
-      if (navKey?.currentState != null && type != null && orderId != null) {
-        // Redirection intelligente selon le type
-        // Ex: navKey.currentState!.pushNamed(...)
+      final state = navKey?.currentState;
+      if (state != null && type != null) {
+        if (type == 'taxi_step_update' || type == 'taxi') {
+          state.pushNamed(AppRoutes.taxi);
+        }
       }
     } catch (e) {
       debugPrint('Error handling notification tap: $e');

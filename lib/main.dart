@@ -9,7 +9,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ApiSession.load();
   await FoodCart.instance.init();
-  await FcmService.instance.initialize();
+  await FcmService.instance.initialize(navigatorKey: AdiakeApp.navigatorKey);
   try {
     await ApiSession.refreshMe();
   } catch (_) {

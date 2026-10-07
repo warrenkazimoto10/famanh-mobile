@@ -87,30 +87,19 @@ class _ClientServicesScreenState extends State<ClientServicesScreen>
                       Expanded(
                         child: _CompactCard(
                           icon: Icons.local_taxi_rounded,
-                          iconBg: AdiakeColors.primaryFixed,
-                          iconColor: AdiakeColors.primaryContainer,
-                          title: 'Taxi\nExpress',
-                          badge: 'Bientôt',
-                          badgeColor: AdiakeColors.primaryContainer,
-                          isAvailable: false,
+                          iconBg: const Color(0xFFFEF3C7),
+                          iconColor: const Color(0xFFD97706),
+                          title: 'Taxi\nCommunal',
+                          badge: 'Partagé · Express',
+                          badgeColor: const Color(0xFFD97706),
+                          isAvailable: true,
                           onTap: () {
-                            HapticFeedback.lightImpact();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  'Taxi Express arrive très bientôt !',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                backgroundColor: AdiakeColors.primaryContainer,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                            );
+                            HapticFeedback.mediumImpact();
+                            Navigator.of(context).pushNamed(AppRoutes.taxi);
                           },
                         ),
                       ),
+
                       const SizedBox(width: 12),
                       Expanded(
                         child: _CompactCard(

@@ -13,10 +13,14 @@ class ApiConfig {
       return _envUrl;
     }
     if (kIsWeb) {
-      if (kReleaseMode) {
-        return '${Uri.base.origin}/backend';
+      final host = Uri.base.host;
+      if (host == 'localhost' || host == '127.0.0.1') {
+        return 'http://127.0.0.1:8000';
       }
-      return _webHost;
+      if (host.startsWith('192.168.') || host.startsWith('172.') || host.startsWith('10.')) {
+        return '${Uri.base.scheme}://$host:8000';
+      }
+      return '${Uri.base.origin}/backend';
     }
     return _localDeviceHost;
   }

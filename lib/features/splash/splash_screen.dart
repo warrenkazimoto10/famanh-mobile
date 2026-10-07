@@ -38,7 +38,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       final me = ApiSession.currentUser.value;
       if (me != null && me.role == 'driver') {
         _navigated = true;
-        Navigator.of(context).pushReplacementNamed(AppRoutes.driverDashboard);
+        if (me.vehicleType == 'taxi') {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.taxiDriver);
+        } else {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.driverDashboard);
+        }
         return;
       }
       if (me != null) {

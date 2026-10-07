@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../app/routes.dart';
 import '../../data/api_client.dart';
+
 import '../../data/api_session.dart';
 import '../../services/background_tracking_service.dart';
 import '../../theme/adiake_colors.dart';
@@ -11,6 +13,7 @@ import 'driver_jobs_screen.dart';
 import 'driver_notification_history_screen.dart';
 import 'driver_revenues_screen.dart';
 import '../profile/profile_screen.dart';
+import '../taxi/taxi_driver_screen.dart';
 
 /// Shell livreur aligné sur la maquette premium (header fixe, bottom nav, FAB).
 class DriverDashboardScreen extends StatefulWidget {
@@ -194,7 +197,9 @@ class _PremiumDriverHeaderState extends State<_PremiumDriverHeader> {
       child: ValueListenableBuilder<UserMeDto?>(
         valueListenable: ApiSession.currentUser,
         builder: (context, me, _) {
-          final fullName = (me?.name?.trim().isNotEmpty ?? false) ? me!.name!.trim() : 'Livreur Famanh';
+          final rawName = me?.name?.trim();
+          final fullName = (rawName != null && rawName.isNotEmpty) ? rawName : 'Chauffeur / Livreur Famanh';
+          final avatarUrl = me?.avatarUrl?.trim();
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -222,8 +227,8 @@ class _PremiumDriverHeaderState extends State<_PremiumDriverHeader> {
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   ),
                                 )
-                              : (me?.avatarUrl != null && me!.avatarUrl!.isNotEmpty)
-                                  ? Image.network(me.avatarUrl!, fit: BoxFit.cover)
+                              : (avatarUrl != null && avatarUrl.isNotEmpty)
+                                  ? Image.network(avatarUrl, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Image.network(widget.placeholderAvatarUrl, fit: BoxFit.cover))
                                   : Image.network(widget.placeholderAvatarUrl, fit: BoxFit.cover),
                         ),
                         if (!_uploading)
@@ -273,6 +278,16 @@ class _PremiumDriverHeaderState extends State<_PremiumDriverHeader> {
                     ),
                   ),
                   IconButton(
+                    onPressed: () => Navigator.of(context).pushNamed(AppRoutes.taxiDriver),
+                    icon: const Icon(Icons.local_taxi_rounded),
+                    tooltip: 'Mode Taxi Communal',
+                    color: const Color(0xFF0F172A),
+                    style: IconButton.styleFrom(
+                      backgroundColor: const Color(0xFFEAB308),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  IconButton(
                     onPressed: widget.onNotifications,
                     icon: const Icon(Icons.notifications_none_rounded),
                     color: Colors.white,
@@ -282,6 +297,7 @@ class _PremiumDriverHeaderState extends State<_PremiumDriverHeader> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 12),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

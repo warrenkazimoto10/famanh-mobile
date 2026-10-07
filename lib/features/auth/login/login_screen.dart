@@ -156,15 +156,33 @@ class _LoginScreenState extends State<LoginScreen> {
       ApiSession.currentUser.value = me;
       if (!context.mounted) return;
       if (me.role == 'driver') {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.driverDashboard);
+        if (me.vehicleType == 'taxi') {
+          AppToast.showSuccess(context, 'Connexion Chauffeur Taxi réussie !');
+          Navigator.of(context).pushReplacementNamed(AppRoutes.taxiDriver);
+        } else {
+          AppToast.showSuccess(context, 'Connexion Livreur réussie !');
+          Navigator.of(context).pushReplacementNamed(AppRoutes.driverDashboard);
+        }
       } else if (me.role == 'admin') {
+        AppToast.showSuccess(context, 'Connexion Administrateur réussie !');
         Navigator.of(context).pushReplacementNamed(AppRoutes.adminDashboard);
       } else {
+        AppToast.showSuccess(context, 'Connexion réussie ! Bienvenue ${me.name ?? ""}');
         Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
       }
     } catch (e) {
       if (!context.mounted) return;
-      AppToast.showError(context, e.toString());
+      final raw = e.toString().replaceAll('Exception: ', '').replaceAll('ApiException: ', '');
+      String msg = raw;
+      final lower = raw.toLowerCase();
+      if (lower.contains('invalid') || lower.contains('identifiant') || raw.contains('401') || lower.contains('unauthenticated') || lower.contains('credentials')) {
+        msg = 'Numéro de téléphone ou mot de passe incorrect.';
+      } else if (lower.contains('socket') || lower.contains('failed host lookup') || lower.contains('network') || lower.contains('clientexception')) {
+        msg = 'Impossible de joindre le serveur. Vérifiez que vous êtes sur le même réseau Wi-Fi.';
+      } else if (lower.contains('null check operator')) {
+        msg = 'Synchronisation du profil réussie. Redirection...';
+      }
+      AppToast.showError(context, msg);
     } finally {
       if (mounted) setState(() => _loading = false);
     }

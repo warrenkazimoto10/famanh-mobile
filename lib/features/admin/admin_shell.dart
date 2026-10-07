@@ -15,7 +15,10 @@ import 'screens/admin_restaurants_screen.dart';
 import 'screens/admin_revenue_screen.dart';
 import 'screens/admin_settings_screen.dart';
 import 'screens/admin_stats_screen.dart';
+import 'screens/admin_taxi_screen.dart';
 import 'screens/admin_users_screen.dart';
+import 'screens/admin_zones_screen.dart';
+
 
 // ─── Shell ────────────────────────────────────────────────────────────────────
 
@@ -167,8 +170,21 @@ class _Sidebar extends StatelessWidget {
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminGasScreen())),
           ),
           _SidebarActionTile(
+            icon: Icons.local_taxi_rounded,
+            label: 'Taxi & Portefeuilles',
+            color: const Color(0xFFD97706),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminTaxiScreen())),
+          ),
+          _SidebarActionTile(
+            icon: Icons.map_rounded,
+            label: 'Cartographie & Quartiers',
+            color: const Color(0xFF0284C7),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminZonesScreen())),
+          ),
+          _SidebarActionTile(
             icon: Icons.attach_money_rounded,
             label: 'Tarification',
+
             color: const Color(0xFF1565C0),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminPricingScreen())),
           ),
@@ -358,6 +374,8 @@ class _NarrowScaffold extends StatelessWidget {
             icon: const Icon(Icons.more_vert, color: Colors.white),
             onSelected: (v) {
               if (v == 'drivers') Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminDriversScreen()));
+              if (v == 'taxi') Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminTaxiScreen()));
+              if (v == 'zones') Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminZonesScreen()));
               if (v == 'gas') Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminGasScreen()));
               if (v == 'pricing') Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminPricingScreen()));
               if (v == 'revenue') Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AdminRevenueScreen()));
@@ -367,7 +385,10 @@ class _NarrowScaffold extends StatelessWidget {
             },
             itemBuilder: (_) => [
               const PopupMenuItem(value: 'drivers', child: ListTile(leading: Icon(Icons.delivery_dining_rounded, color: Color(0xFF1565C0)), title: Text('Livreurs'), contentPadding: EdgeInsets.zero)),
+              const PopupMenuItem(value: 'taxi', child: ListTile(leading: Icon(Icons.local_taxi_rounded, color: Color(0xFFD97706)), title: Text('Taxi & Portefeuilles'), contentPadding: EdgeInsets.zero)),
+              const PopupMenuItem(value: 'zones', child: ListTile(leading: Icon(Icons.map_rounded, color: Color(0xFF0284C7)), title: Text('Cartographie & Quartiers'), contentPadding: EdgeInsets.zero)),
               const PopupMenuItem(value: 'gas', child: ListTile(leading: Icon(Icons.propane_tank_rounded, color: Color(0xFFE65100)), title: Text('Gestion du Gaz'), contentPadding: EdgeInsets.zero)),
+
               const PopupMenuItem(value: 'pricing', child: ListTile(leading: Icon(Icons.attach_money_rounded), title: Text('Tarification'), contentPadding: EdgeInsets.zero)),
               const PopupMenuItem(value: 'revenue', child: ListTile(leading: Icon(Icons.bar_chart_rounded), title: Text('Revenus acteurs'), contentPadding: EdgeInsets.zero)),
               const PopupMenuItem(value: 'settings', child: ListTile(leading: Icon(Icons.settings_rounded, color: Color(0xFF455A64)), title: Text('Réglages généraux'), contentPadding: EdgeInsets.zero)),
